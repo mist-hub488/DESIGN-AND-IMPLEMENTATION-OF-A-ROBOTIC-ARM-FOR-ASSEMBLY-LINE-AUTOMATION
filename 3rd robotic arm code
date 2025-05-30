@@ -1,0 +1,67 @@
+% Link lengths (meters)
+L1 = 1;
+L2 = 1;
+L3 = 0.5;
+
+% Create figure and setup plot once
+figure;
+hold on;
+axis equal;
+grid on;
+xlabel('X'); ylabel('Y'); zlabel('Z');
+view(3);
+xlim([-2.5 2.5]); ylim([-2.5 2.5]); zlim([-1 1]);
+title('Animated 3-Link Planar Robotic Arm');
+
+% Pre-create plot handles for links and joints
+link1 = plot3([0 0],[0 0],[0 0],'b','LineWidth',3);
+link2 = plot3([0 0],[0 0],[0 0],'r','LineWidth',3);
+link3 = plot3([0 0],[0 0],[0 0],'g','LineWidth',3);
+
+jointBase = plot3(0,0,0,'ko','MarkerSize',10,'MarkerFaceColor','k');
+joint1 = plot3(0,0,0,'mo','MarkerSize',10,'MarkerFaceColor','m');
+joint2 = plot3(0,0,0,'co','MarkerSize',10,'MarkerFaceColor','c');
+joint3 = plot3(0,0,0,'ko','MarkerSize',10,'MarkerFaceColor','k');
+
+z0 = 0;  % Planar arm, Z always zero
+
+% Define number of frames for animation
+numFrames = 100;
+
+% Generate changing joint angles for animation (radians)
+theta1_vals = linspace(0, pi/2, numFrames);   % from 0 to 90 degrees
+theta2_vals = linspace(0, pi/3, numFrames);   % from 0 to 60 degrees
+theta3_vals = linspace(0, pi/4, numFrames);   % from 0 to 45 degrees
+
+for i = 1:numFrames
+    % Current angles
+    theta1 = theta1_vals(i);
+    theta2 = theta2_vals(i);
+    theta3 = theta3_vals(i);
+   
+    % Forward Kinematics
+    x1 = L1*cos(theta1);
+    y1 = L1*sin(theta1);
+
+    x2 = x1 + L2*cos(theta1 + theta2);
+    y2 = y1 + L2*sin(theta1 + theta2);
+
+    x3 = x2 + L3*cos(theta1 + theta2 + theta3);
+    y3 = y2 + L3*sin(theta1 + theta2 + theta3);
+   
+    % Update links' data
+    set(link1, 'XData', [0 x1], 'YData', [0 y1], 'ZData', [z0 z0]);
+    set(link2, 'XData', [x1 x2], 'YData', [y1 y2], 'ZData', [z0 z0]);
+    set(link3, 'XData', [x2 x3], 'YData', [y2 y3], 'ZData', [z0 z0]);
+   
+    % Update joints' positions
+    set(joint1, 'XData', x1, 'YData', y1, 'ZData', z0);
+    set(joint2, 'XData', x2, 'YData', y2, 'ZData', z0);
+    set(joint3, 'XData', x3, 'YData', y3, 'ZData', z0);
+   
+    drawnow;  % Refresh the plot
+   
+    pause(0.05);  % Slow down the animation for visibility
+end
+
+hold off;
