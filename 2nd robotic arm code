@@ -1,0 +1,51 @@
+% Link lengths (meters)
+L1 = 1;
+L2 = 1;
+L3 = 0.5;
+
+% Joint angles (radians)
+theta1 = pi/4;   % 45 degrees
+theta2 = pi/6;   % 30 degrees
+theta3 = pi/3;   % 60 degrees
+
+% Forward Kinematics: Calculate joint positions
+x1 = L1 * cos(theta1);
+y1 = L1 * sin(theta1);
+
+x2 = x1 + L2 * cos(theta1 + theta2);
+y2 = y1 + L2 * sin(theta1 + theta2);
+
+x3 = x2 + L3 * cos(theta1 + theta2 + theta3);
+y3 = y2 + L3 * sin(theta1 + theta2 + theta3);
+
+% 3D Plot of Robotic Arm
+figure;
+hold on;
+axis equal;
+grid on;
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+view(3);          % 3D view
+title('3-Link Planar Robotic Arm');
+
+% Since arm is planar, Z=0 for all points
+z0 = 0;
+
+% Plot links in 3D
+plot3([0, x1], [0, y1], [z0, z0], 'b', 'LineWidth', 3);       % Link 1
+plot3([x1, x2], [y1, y2], [z0, z0], 'r', 'LineWidth', 3);     % Link 2
+plot3([x2, x3], [y2, y3], [z0, z0], 'g', 'LineWidth', 3);     % Link 3
+
+% Plot joints in 3D
+plot3(0, 0, 0, 'ko', 'MarkerSize', 10, 'MarkerFaceColor', 'k');       % Base
+plot3(x1, y1, z0, 'mo', 'MarkerSize', 10, 'MarkerFaceColor', 'm');    % Joint 1
+plot3(x2, y2, z0, 'co', 'MarkerSize', 10, 'MarkerFaceColor', 'c');    % Joint 2
+plot3(x3, y3, z0, 'ko', 'MarkerSize', 10, 'MarkerFaceColor', 'k');    % End effector (gripper)
+
+% Set axis limits for better view
+xlim([-2.5, 2.5]);
+ylim([-2.5, 2.5]);
+zlim([-1, 1]);
+
+hold off;
